@@ -10,12 +10,9 @@ const info = ref(true);
 </script>
 
 <template>
-  <div class="grain-wrapper">
-    <div class="grain"></div>
-  </div>
   <header>
     <div class="wrapper">
-      <h1>OBSCURE WAVE</h1>
+      <h1>CYNDEL HEROLT</h1>
       <em>Un lieu de découvertes musicales aux sonorités obscures et froides. <br> Du plus paumé des indépendants aux
         groupes fares d'une époque intemporelle.
         <font-awesome-icon :icon="['fal', 'question-square']" @click="info = !info"/>
@@ -60,6 +57,9 @@ const info = ref(true);
   <HomeView/>
 
   <RouterView/>
+  <div class="grain-wrapper">
+    <div class="grain"></div>
+  </div>
 </template>
 
 <style scoped>
@@ -70,6 +70,7 @@ const info = ref(true);
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  z-index: -9999;
 }
 
 .grain {
