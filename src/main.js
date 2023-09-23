@@ -10,6 +10,8 @@ import { faCompactDisc } from '@fortawesome/pro-light-svg-icons'
 import { faStar } from '@fortawesome/pro-light-svg-icons'
 import { faBalloons } from '@fortawesome/pro-light-svg-icons'
 import { faUser } from '@fortawesome/pro-light-svg-icons'
+import { faSunBright } from '@fortawesome/pro-light-svg-icons'
+import { faMoon } from '@fortawesome/pro-light-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const app = createApp(App)
@@ -22,6 +24,8 @@ library.add(faCompactDisc)
 library.add(faStar)
 library.add(faBalloons)
 library.add(faUser)
+library.add(faSunBright)
+library.add(faMoon)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 

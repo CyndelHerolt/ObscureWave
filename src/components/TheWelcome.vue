@@ -3,5 +3,5 @@
 </script>
 
 <template>
-<h2>Hello !</h2>
+  <h2>Hi there !</h2>
 </template>
