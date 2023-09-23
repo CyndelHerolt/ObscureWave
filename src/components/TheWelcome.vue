@@ -1,30 +1,45 @@
 <script setup>
-import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex'
+import { computed, ref } from 'vue'
 
-const songData = ref(null);
-
-onMounted(async () => {
-  // Obtenir le token d'accès à partir du serveur Node.js
-  const { data } = await axios.get('http://localhost:3000/spotify-token');
-  const token = data.access_token;
-
-  // Utiliser le token pour interroger l'API de Spotify pour une chanson en particulier.
-  const songId = '3n3Ppam7vgaVa1iaRUc9Lp'; // Remplacer par l'ID de la chanson que vous voulez.
-  const response = await axios.get(`https://api.spotify.com/v1/tracks/${songId}`, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-
-  songData.value = response.data;
+const store = useStore();
+const itemsPerPage = 8;
+const currentPage = ref(1);
+const allRelatedArtists = computed(() => Array.from(store.state.allRelatedArtists.values()));
+const maxPage = computed(() => Math.ceil(allRelatedArtists.value.length / itemsPerPage));
+const paginatedArtists = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return allRelatedArtists.value.slice(start, end);
 });
+
+function goNextPage() {
+  if (currentPage.value < maxPage.value) {
+    currentPage.value++;
+  }
+}
+
+function goPreviousPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+}
 </script>
 
 <template>
-  <!-- Afficher les informations sur le titre ici -->
-  <div v-if="songData">
-    <h2>{{ songData.name }}</h2>
-    <p>{{ songData.artists.map(artist => artist.name).join(', ') }}</p>
-  </div>
+  <section>
+    <h2>Galerie d'artistes</h2>
+    <ul class="galerie">
+      <!-- récupérer les artistes -->
+      <li v-for="artist in paginatedArtists" :key="artist.id">
+        <router-link :to="'/artiste/' + artist.id">
+          <img :src="artist.images[1]?.url" :alt="artist.name" style="width: 100px">
+          <p>{{ artist.name }}</p>
+        </router-link>
+      </li>
+    </ul>
+    <p>Page {{ currentPage }} of {{ maxPage }}</p>
+    <button @click="goPreviousPage" :disabled="currentPage === 1">Previous</button>
+    <button @click="goNextPage" :disabled="currentPage === maxPage">Next</button>
+  </section>
 </template>

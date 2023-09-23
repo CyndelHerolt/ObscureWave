@@ -2,11 +2,12 @@
 import {RouterLink, RouterView} from 'vue-router'
 import HomeView from "@/views/HomeView.vue";
 
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
+import {useStore} from 'vuex'
 
 const info = ref(true);
-
 let isLightTheme = ref(false);
+const store = useStore()
 
 const toggleTheme = () => {
   isLightTheme.value = !isLightTheme.value;
@@ -18,6 +19,47 @@ const toggleTheme = () => {
   }
 };
 
+// ----------------------------------------------
+// ---------------------------------------------- SPOTIFY
+// ----------------------------------------------
+
+import axios from 'axios';
+
+const artists = ['Belgrado', 'Siouxie and the Banshees', 'Sonic Youth', 'The Cure', 'Frustration', 'Rendez Vous', 'Delacave', 'Lebanon Hanover', 'Kas Product', 'Trisomie 21', 'Molchat Doma', 'Soviet Soviet', 'Velvet Condom', 'Grauzone', 'The KVB', 'Black Marble', "TheKnife", "Zombie Zombie", "Fever Ray", "Bodega", "Sad Lovers & Giants", "Bauhaus", "Motorama", "Depeche Mode", "Dark", "Structures", "Prayers", "The Drums", "New Order", "French Police", "Cheveu", "Casket Cassette", "Cheveu", "Sextile", "Peremotka", "Talking Heads", "The Sound", "Boxed In", "The Feelies", "Crystal Castles"];
+const allRelatedArtists = ref(new Map());
+
+onMounted(async () => {
+  const { data } = await axios.get('http://localhost:3000/spotify-token');
+  const token = data.access_token;
+
+  for (let i = 0; i < artists.length; i++) {
+    // Search for artist ID
+    const artistResponse = await axios.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artists[i])}&type=artist`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    const artistData = artistResponse.data.artists.items[0];
+    allRelatedArtists.value.set(artistData.id, artistData);
+
+    // Use artist ID to get related artists
+    const relatedResponse = await axios.get(`https://api.spotify.com/v1/artists/${artistData.id}/related-artists`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+// Add only related artists with the genres 'post-punk' and 'coldwave' to the map
+    relatedResponse.data.artists.filter(artist => artist.genres.includes('post-punk') || artist.genres.includes('coldwave') || artist.genres.includes('punk') || artist.genres.includes('rock')).forEach(artist => allRelatedArtists.value.set(artist.id, artist));
+  }
+});
+
+onMounted(async () => {
+// existing fetch code
+// change this line
+  store.dispatch('updateArtists', allRelatedArtists.value)
+})
 </script>
 
 <template>
@@ -25,11 +67,11 @@ const toggleTheme = () => {
     <div class="wrapper">
       <div>
         <h1>OBSCURE WAVE</h1>
-        <em>Un lieu de découvertes musicales aux sonorités obscures et froides. <br> Du plus paumé des indépendants aux
+        <em>Un lieu de découvertes musicales aux sonorités obscures et froides. <br> Des plus paumés aux
           groupes fares d'une époque intemporelle.
           <font-awesome-icon :icon="['fal', 'question-square']" @click="info = !info"/>
         </em> <br>
-        <small v-if="!info">bon en vérité tout vient de l'API Spotify donc désolé José qui joue du synthé dans son
+        <small v-if="!info">bon en vérité tout vient de l'API Spotify et les requêtes sont limitées donc désolé José qui joue du synthé dans son
           garage
           tu ne seras pas répertorié.</small>
       </div>
@@ -104,6 +146,7 @@ const toggleTheme = () => {
   background-size: 100px 100px;
   animation: grain 4s steps(10) infinite;
 }
+
 .grain-light {
   position: absolute;
   top: -50%;
