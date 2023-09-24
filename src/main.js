@@ -13,6 +13,8 @@ import { faBalloons } from '@fortawesome/pro-light-svg-icons'
 import { faUser } from '@fortawesome/pro-light-svg-icons'
 import { faSunBright } from '@fortawesome/pro-light-svg-icons'
 import { faMoon } from '@fortawesome/pro-light-svg-icons'
+import { faArrowRightFromLine } from '@fortawesome/pro-light-svg-icons'
+import { faArrowLeftFromLine } from '@fortawesome/pro-light-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const store = createStore({
@@ -46,7 +48,10 @@ library.add(faBalloons)
 library.add(faUser)
 library.add(faSunBright)
 library.add(faMoon)
+library.add(faArrowRightFromLine)
+library.add(faArrowLeftFromLine)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.mount('#app')
+

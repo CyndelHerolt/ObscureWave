@@ -25,7 +25,8 @@ const toggleTheme = () => {
 
 import axios from 'axios';
 
-const artists = ['Belgrado', 'Siouxie and the Banshees', 'Sonic Youth', 'The Cure', 'Frustration', 'Rendez Vous', 'Delacave', 'Lebanon Hanover', 'Kas Product', 'Trisomie 21', 'Molchat Doma', 'Soviet Soviet', 'Velvet Condom', 'Grauzone', 'The KVB', 'Black Marble', "TheKnife", "Zombie Zombie", "Fever Ray", "Bodega", "Sad Lovers & Giants", "Bauhaus", "Motorama", "Depeche Mode", "Dark", "Structures", "Prayers", "The Drums", "New Order", "French Police", "Cheveu", "Casket Cassette", "Cheveu", "Sextile", "Peremotka", "Talking Heads", "The Sound", "Boxed In", "The Feelies", "Crystal Castles"];
+const artists = ['4OAmUQMp9sTuvo55MxGUq4', '6f0a9iVPQDoUEOYPSg55Mk', '1n65zfwYIj5kKEtNgxUlWb', '5UqTO8smerMvxHYA5xsXb6', '7bu3H8JO7d0UbMoVzbo70s', '4a118edzJsiImCyPCZk6mY', '17fRvSxcNP5EIMeMKQiH7Q', '6w8h2uD28BEdg7bX4k3Lh7', '54EC6gwS2xOT550t8Tqthd', '4T01AXq67OdpoYhTZY3FbR', '1nVq0hKIVReeaiB3xJgKf0', '5BC3lvcEEOqVrqMaPjYrgu', '751d4soU7iC3TfGl8y1EyU', '2oNZUW4sR0AGXRyPExtFnW', '0BzJFLqchxKNQyEwswwQ40', '6Nii4K84ZzBZS8X2MP8c9t', "7eQZTqEMozBcuSubfu52i4", "0HVcyKnveIOLkJdAGsE1pk", "5hE6NCoobhyEu6TRSbjOJY", "3WPQHDN5VniDY6JBGUV7UQ", "5N5tQ9Dx1h8Od7aRmGj7Fi", "3j0kMFxXTTYsuw1twLClw3", "762310PdDnwsDxAQxzQkfX", "7wJ9NwdRWtN92NunmXuwBk", "4uAJ9vbmemltkuu0D3gBHQ", "7a0G4CC3dZdKAAzVRnaRGu", "3A6FvoCrZq0imwy7CwSTUA", "0yNLKJebCb8Aueb54LYya3", "3V4FPipSnuYjtHnnAw9cZd", "3No127Hkg9LRf1Q63Uyq35", "7hpTA4ta9iSezFWhwfEbWK", "4ReoJ2faKfdjI0plizlL56", "3AwNBhYb8tZmJ5m0VIKHp2", "4hzCcF4Leos2sKnz79nwhz", "6bxYUbMVzrPTOmzwey8Hgh", "4UETUdF77BfyJ7fEFVztr3", "7K3zpFXBvPcvzhj7zlGJdO"];
+
 const allRelatedArtists = ref(new Map());
 
 onMounted(async () => {
@@ -33,33 +34,29 @@ onMounted(async () => {
   const token = data.access_token;
 
   for (let i = 0; i < artists.length; i++) {
-    // Search for artist ID
-    const artistResponse = await axios.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artists[i])}&type=artist`, {
+    // Utiliser l'ID de l'artiste pour obtenir les informations de l'artiste
+    const artistResponse = await axios.get(`https://api.spotify.com/v1/artists/${artists[i]}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     });
 
-    const artistData = artistResponse.data.artists.items[0];
+    const artistData = artistResponse.data;
     allRelatedArtists.value.set(artistData.id, artistData);
 
-    // Use artist ID to get related artists
+    // Utiliser l'ID de l'artiste pour obtenir les artistes liés
     const relatedResponse = await axios.get(`https://api.spotify.com/v1/artists/${artistData.id}/related-artists`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     });
 
-// Add only related artists with the genres 'post-punk' and 'coldwave' to the map
+    // Ajouter seulement les artistes liés avec les genres 'post-punk' et 'coldwave' à la carte
     relatedResponse.data.artists.filter(artist => artist.genres.includes('post-punk') || artist.genres.includes('coldwave') || artist.genres.includes('punk') || artist.genres.includes('rock')).forEach(artist => allRelatedArtists.value.set(artist.id, artist));
   }
-});
 
-onMounted(async () => {
-// existing fetch code
-// change this line
-  store.dispatch('updateArtists', allRelatedArtists.value)
-})
+  store.dispatch('updateArtists', allRelatedArtists.value);
+});
 </script>
 
 <template>
