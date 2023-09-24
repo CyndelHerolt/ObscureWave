@@ -185,4 +185,12 @@ a {
         cursor: pointer;
         transition: 0.4s;
     }
+
+    .artist-header img {
+        /*width: 20%;*/
+        /*height: 600px;*/
+        /*object-fit: cover;*/
+        /*object-position: center;*/
+        margin-bottom: 1rem;
+    }
 }
