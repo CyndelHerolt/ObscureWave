@@ -111,8 +111,6 @@ onMounted(async () => {
     </nav>
   </aside>
 
-  <HomeView/>
-
   <RouterView/>
   <div class="grain-wrapper">
     <div v-if="isLightTheme" class="grain-light grain"></div>

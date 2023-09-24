@@ -38,12 +38,11 @@ function goPreviousPage() {
 <template>
   <section>
     <h2>Artistes</h2>
-
     <ul class="galerie">
       <!-- récupérer les artistes -->
       <li v-for="artist in paginatedArtists" :key="artist.id">
         <router-link :to="'/artiste/' + artist.id">
-          <img :src="artist.images[1]?.url" :alt="artist.name">
+          <img :src="artist.images[0]?.url" :alt="artist.name">
           <div class="card_txt">
             <h3>{{ artist.name }}</h3>
             <small>{{ artist.genres[0] }}</small>

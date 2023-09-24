@@ -1,9 +1,11 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+// import CommandCenter from '../components/LastReleases.vue'
+import AllArtists from '../components/AllArtists.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome/>
+<!--    <CommandCenter/>-->
+    <AllArtists/>
   </main>
 </template>
